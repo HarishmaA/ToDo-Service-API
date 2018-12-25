@@ -1,10 +1,8 @@
 package com.example.todomongodb.todoserviceapi.controller;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import  static java.util.stream.Collectors.toList;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,27 +48,18 @@ public class ToDoController {
 		return toDoService.getAll();
 	}
 	
-//	@GetMapping(value = "/getMyTodosByDay/user/{userId}", produces = "application/json")
-//	public List<List<ToDo>> toDoSplitedByDay(@PathVariable String userId){
-//		String[] days = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-//		List<ToDo> toDoListOfParticularUser =toDoService.getByUserId(userId);
-//		List<ToDo> toDoByDay = new ArrayList<>();
-//		List<Todo> toDoByDay = Arrays.stream(days)
-//		           .map(day->{
-//		toDoListOfParticularUser.stream()
-//		                       .filter(toDo->toDo.getDay().equalsIgnoreCase(day)? toDoByDay.add(toDo) :false)
-//		                       .collect(toList());
-//		                       }
-//		               );
-//	}
+	@GetMapping(value = "/getToDoSplitedByDay/user/{userId}", produces = "application/json")
+	public Map<String,List<ToDo>> getToDoListSplitedByDay(@PathVariable String userId){
+	 return toDoService.getToDoSplitedByDay(userId);
+	}
 	@PutMapping("/update/user/{userId}")
 	public String update(@PathVariable String userId,@RequestBody ToDo toDo) {
 		String id = toDo.get_id();
 		String toDoText = toDo.getToDoText();
 		String day = toDo.getDay();
 		LocalDateTime createdAt = toDo.getCreatedAt();
-		ToDo p = toDoService.update(id,toDoText, day,userId,createdAt);
-		return p.toString();
+		ToDo toDoResult = toDoService.update(id,toDoText, day,userId,createdAt);
+		return toDoResult.toString();
 	}
 	@DeleteMapping("/delete/user/{userId}")
 	public ResponseEntity<String> delete(@PathVariable String userId) {
