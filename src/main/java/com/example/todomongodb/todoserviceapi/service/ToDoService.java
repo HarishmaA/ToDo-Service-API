@@ -1,17 +1,16 @@
 package com.example.todomongodb.todoserviceapi.service;
 
-
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import com.example.todomongodb.todoserviceapi.model.ToDo;
+import com.example.todomongodb.todoserviceapi.domain.ToDo;
+import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 import com.example.todomongodb.todoserviceapi.repository.ToDoRepository;
 
 
@@ -23,9 +22,8 @@ public class ToDoService {
 	private ToDoRepository toDoRepository;
 	
 	//Create operation
-	public ToDo create(String  id, String toDoText, String day, String userId,LocalDateTime updatedAt) {
-		LocalDateTime createdAt= LocalDateTime.now();
-		return toDoRepository.save(new ToDo(id,toDoText,day,userId,createdAt,updatedAt));
+	public ToDo create(ToDoDto toDoDto) {
+		return toDoRepository.save(new ToDo(toDoDto.getToDoText(),toDoDto.getDay(),toDoDto.getUserId(),OffsetDateTime.now(),toDoDto.getUpdatedAt()));
 	}
 	//Retrieve operations
 	public List<ToDo> getAll(){
@@ -42,12 +40,11 @@ public class ToDoService {
                                    .collect(Collectors.groupingBy(ToDo::getDay));
 	}
 	//Update operations
-	public ToDo update(String id, String toDoText, String day, String userId,LocalDateTime createdAt) {
-		List<ToDo> toDoListOfParticularUser = toDoRepository.findByUserId(userId);
+	public ToDo update(ToDoDto toDoDto) {
+		List<ToDo> toDoListOfParticularUser = toDoRepository.findByUserId(toDoDto.getUserId());
 		ToDo toDoResult = toDoListOfParticularUser.get(0);
-		toDoResult.setToDoText(toDoText);
-		toDoResult.setDay(day);
-	    toDoResult.setUpdatedAt(LocalDateTime.now());
+		System.out.println(toDoResult.getUpdatedAt());
+		toDoResult.update(toDoDto,toDoResult.getCreatedAt());	
 		return toDoRepository.save(toDoResult);
 	}
 	//Delete operations
@@ -59,4 +56,5 @@ public class ToDoService {
 		ToDo toDoResult = toDoListOfParticularUser.get(0);
 		toDoRepository.delete(toDoResult);
 	}
+
 }
