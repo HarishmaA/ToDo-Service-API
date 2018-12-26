@@ -1,6 +1,5 @@
 package com.example.todomongodb.todoserviceapi.controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.todomongodb.todoserviceapi.model.ToDo;
+import com.example.todomongodb.todoserviceapi.domain.ToDo;
+import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 import com.example.todomongodb.todoserviceapi.service.ToDoService;
 
 
@@ -30,13 +30,10 @@ public class ToDoController {
 	private ToDoService toDoService;
 	
 	@PostMapping(value ="/create/user/{userId}", consumes ="application/json" , produces ="application/json")
-	public String create(@PathVariable String userId, @RequestBody ToDo toDo) {
-		String id = toDo.get_id();
-		String toDoText = toDo.getToDoText();
-		String day = toDo.getDay();
-		LocalDateTime updatedAt = toDo.getUpdatedAt();
-		ToDo toDoResult = toDoService.create(id,toDoText, day,userId,updatedAt);
-		return toDoResult.toString();
+	public ResponseEntity<ToDo> create(@PathVariable String userId, @RequestBody ToDoDto toDoDto) {
+		toDoDto.setUserId(userId);
+		ToDo toDoResult = toDoService.create(toDoDto);
+		return new ResponseEntity<>(toDoResult,HttpStatus.CREATED);
 	}
 	
 	@GetMapping(value = "/get/user",produces = "application/json")
@@ -53,23 +50,20 @@ public class ToDoController {
 	 return toDoService.getToDoSplitedByDay(userId);
 	}
 	@PutMapping("/update/user/{userId}")
-	public String update(@PathVariable String userId,@RequestBody ToDo toDo) {
-		String id = toDo.get_id();
-		String toDoText = toDo.getToDoText();
-		String day = toDo.getDay();
-		LocalDateTime createdAt = toDo.getCreatedAt();
-		ToDo toDoResult = toDoService.update(id,toDoText, day,userId,createdAt);
-		return toDoResult.toString();
+	public ResponseEntity<ToDo> update(@PathVariable String userId,@RequestBody ToDoDto toDoDto) {
+		toDoDto.setUserId(userId);
+		ToDo toDoResult = toDoService.update(toDoDto);
+		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
 	}
 	@DeleteMapping("/delete/user/{userId}")
 	public ResponseEntity<String> delete(@PathVariable String userId) {
 		toDoService.delete(userId);
-		return new ResponseEntity<String>("Deleted "+userId,HttpStatus.OK);
+		return new ResponseEntity<>(String.format("Deleted %s", userId),HttpStatus.OK);
 	}
 	@DeleteMapping ("/deleteAll")
 	public ResponseEntity<String> deleteAll() {
 		toDoService.deleteAll();
-		return new ResponseEntity<String>("Deleted all records",HttpStatus.OK);
+		return new ResponseEntity<>("Deleted all records",HttpStatus.OK);
 	}
 	
 }
