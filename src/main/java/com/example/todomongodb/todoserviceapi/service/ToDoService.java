@@ -3,7 +3,7 @@ package com.example.todomongodb.todoserviceapi.service;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.groupingBy;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class ToDoService {
 	
 	//Create operation
 	public ToDo create(ToDoDto toDoDto) {
-		return toDoRepository.save(new ToDo(toDoDto.getToDoText(),toDoDto.getDay(),toDoDto.getUserId(),OffsetDateTime.now(),toDoDto.getUpdatedAt()));
+		return toDoRepository.save(new ToDo(toDoDto.getToDoText(),false,toDoDto.getDay(),toDoDto.getUserId(),OffsetDateTime.now(),OffsetDateTime.now()));
 	}
 	//Retrieve operations
 	public List<ToDo> getAll(){
@@ -37,24 +37,22 @@ public class ToDoService {
 		List<ToDo> toDoListOfParticularUser = toDoRepository.findByUserId(userId);
 		return toDoListOfParticularUser
 				                   .stream()
-                                   .collect(Collectors.groupingBy(ToDo::getDay));
+                                   .collect(groupingBy(ToDo::getDay));
 	}
 	//Update operations
-	public ToDo update(ToDoDto toDoDto) {
-		List<ToDo> toDoListOfParticularUser = toDoRepository.findByUserId(toDoDto.getUserId());
-		ToDo toDoResult = toDoListOfParticularUser.get(0);
-		System.out.println(toDoResult.getUpdatedAt());
-		toDoResult.update(toDoDto,toDoResult.getCreatedAt());	
-		return toDoRepository.save(toDoResult);
+	public ToDo update(ToDo toDo) {
+		
+		ToDo toDoById = toDoRepository.findById(toDo.get_id()).orElse(new ToDo());
+		ToDo toDoUpdated = toDoById.update(toDo);
+		return toDoRepository.save(toDoUpdated);
 	}
 	//Delete operations
 	public void deleteAll() {
 		toDoRepository.deleteAll();
 	}
-	public void delete(String userId) {
-		List<ToDo> toDoListOfParticularUser = toDoRepository.findByUserId(userId);
-		ToDo toDoResult = toDoListOfParticularUser.get(0);
-		toDoRepository.delete(toDoResult);
+	public void delete(String id) {
+		ToDo toDoById = toDoRepository.findById(id).orElse(new ToDo());
+		toDoRepository.delete(toDoById);
 	}
 
 }

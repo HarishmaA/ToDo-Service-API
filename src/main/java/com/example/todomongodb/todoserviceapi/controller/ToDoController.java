@@ -29,15 +29,15 @@ public class ToDoController {
 	@Autowired
 	private ToDoService toDoService;
 	
-	@PostMapping(value ="/create/user/{userId}", consumes ="application/json" , produces ="application/json")
+	@PostMapping(value ="/create/user/{userId}")
 	public ResponseEntity<ToDo> create(@PathVariable String userId, @RequestBody ToDoDto toDoDto) {
 		toDoDto.setUserId(userId);
 		ToDo toDoResult = toDoService.create(toDoDto);
 		return new ResponseEntity<>(toDoResult,HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value = "/get/user",produces = "application/json")
-	public List<ToDo> getToDoByUserId(@RequestParam String userId) {
+	@GetMapping(value = "/get/user/{userId}")
+	public List<ToDo> getToDoByUserId(@PathVariable String userId) {
 		return toDoService.getByUserId(userId);
 	}
 	@GetMapping(value = "/getAll", produces = "application/json")
@@ -45,20 +45,19 @@ public class ToDoController {
 		return toDoService.getAll();
 	}
 	
-	@GetMapping(value = "/getToDoSplitedByDay/user/{userId}", produces = "application/json")
+	@GetMapping(value = "/getToDoSplitedByDay/user/{userId}")
 	public Map<String,List<ToDo>> getToDoListSplitedByDay(@PathVariable String userId){
 	 return toDoService.getToDoSplitedByDay(userId);
 	}
-	@PutMapping("/update/user/{userId}")
-	public ResponseEntity<ToDo> update(@PathVariable String userId,@RequestBody ToDoDto toDoDto) {
-		toDoDto.setUserId(userId);
-		ToDo toDoResult = toDoService.update(toDoDto);
+	@PutMapping("/update")
+	public ResponseEntity<ToDo> update(@RequestBody ToDo toDo) {
+		ToDo toDoResult = toDoService.update(toDo);
 		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
 	}
 	@DeleteMapping("/delete/user/{userId}")
-	public ResponseEntity<String> delete(@PathVariable String userId) {
-		toDoService.delete(userId);
-		return new ResponseEntity<>(String.format("Deleted %s", userId),HttpStatus.OK);
+	public ResponseEntity<String> delete(@PathVariable String userId,@RequestParam String id) {
+		toDoService.delete(id);
+		return new ResponseEntity<>(String.format("Deleted todo %s of user %s", id,userId),HttpStatus.OK);
 	}
 	@DeleteMapping ("/deleteAll")
 	public ResponseEntity<String> deleteAll() {

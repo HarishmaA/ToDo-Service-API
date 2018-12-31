@@ -5,7 +5,6 @@ import java.time.OffsetDateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,26 +19,29 @@ public class ToDo {
 	@Id
 	String _id;
 	String toDoText;
+	Boolean isFinished;
 	String day;
 	String userId;
 	OffsetDateTime createdAt;
 	OffsetDateTime updatedAt;
 	
-	public ToDo(String toDoText, String day, String userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+	public ToDo(String toDoText, Boolean isFinished, String day, String userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
 		super();
 		this.toDoText = toDoText;
+		this.isFinished = isFinished;
 		this.day = day;
 		this.userId = userId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
-	
-	public ToDo update(ToDoDto toDoDto,OffsetDateTime createdAt)
+	public ToDo() {}
+	public ToDo update(ToDo toDo)
 	{
-		this.toDoText = toDoDto.getToDoText();
-		this.day = toDoDto.getDay();
-		this.userId = toDoDto.getUserId();
-		this.createdAt = createdAt;
+		this.toDoText = toDo.getToDoText();
+		this.day = toDo.getDay();
+		this.userId = toDo.getUserId();
+		this.isFinished = toDo.getIsFinished();
+		this.createdAt = toDo.getCreatedAt();
 		this.updatedAt = OffsetDateTime.now();
 		return this;
 	}
