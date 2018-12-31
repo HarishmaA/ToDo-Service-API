@@ -29,6 +29,7 @@ public class ToDoController {
 	@Autowired
 	private ToDoService toDoService;
 	
+
 	@PostMapping(value ="/create/user/{userId}")
 	public ResponseEntity<ToDo> create(@PathVariable String userId, @RequestBody ToDoDto toDoDto) {
 		toDoDto.setUserId(userId);
@@ -49,6 +50,7 @@ public class ToDoController {
 	public Map<String,List<ToDo>> getToDoListSplitedByDay(@PathVariable String userId){
 	 return toDoService.getToDoSplitedByDay(userId);
 	}
+
 	@PutMapping("/update")
 	public ResponseEntity<ToDo> update(@RequestBody ToDo toDo) {
 		ToDo toDoResult = toDoService.update(toDo);

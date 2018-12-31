@@ -40,8 +40,8 @@ public class ToDoService {
                                    .collect(groupingBy(ToDo::getDay));
 	}
 	//Update operations
-	public ToDo update(ToDo toDo) {
-		
+
+	public ToDo update(ToDo toDo) {	
 		ToDo toDoById = toDoRepository.findById(toDo.get_id()).orElse(new ToDo());
 		ToDo toDoUpdated = toDoById.update(toDo);
 		return toDoRepository.save(toDoUpdated);

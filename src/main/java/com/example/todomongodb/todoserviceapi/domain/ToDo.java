@@ -34,6 +34,7 @@ public class ToDo {
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
+
 	public ToDo() {}
 	public ToDo update(ToDo toDo)
 	{
