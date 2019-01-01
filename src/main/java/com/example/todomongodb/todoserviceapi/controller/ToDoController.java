@@ -21,7 +21,6 @@ import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 import com.example.todomongodb.todoserviceapi.service.ToDoService;
 
 
-
 @RestController
 @RequestMapping(value = "/todo/api")
 public class ToDoController {
@@ -37,31 +36,49 @@ public class ToDoController {
 		return new ResponseEntity<>(toDoResult,HttpStatus.CREATED);
 	}
 	
-	@GetMapping(value = "/get/user/{userId}")
+	@GetMapping(value = "todo/user/{userId}")
 	public List<ToDo> getToDoByUserId(@PathVariable String userId) {
 		return toDoService.getByUserId(userId);
 	}
-	@GetMapping(value = "/getAll", produces = "application/json")
+	@GetMapping(value = "/all-todos")
 	public List<ToDo> getAll(){
 		return toDoService.getAll();
 	}
 	
-	@GetMapping(value = "/getToDoSplitedByDay/user/{userId}")
+	@GetMapping(value = "/day-todos/user/{userId}")
 	public Map<String,List<ToDo>> getToDoListSplitedByDay(@PathVariable String userId){
 	 return toDoService.getToDoSplitedByDay(userId);
 	}
-
+	
+	@GetMapping(value = "/sorted-todos/user/{userId}")
+	public List<ToDo> getSortedToDos(@PathVariable String userId){
+		 return toDoService.getSortedToDos(userId);
+		}
+	
 	@PutMapping("/update")
 	public ResponseEntity<ToDo> update(@RequestBody ToDo toDo) {
 		ToDo toDoResult = toDoService.update(toDo);
 		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
 	}
+	
+	@PutMapping("/update/{id}")
+	public ResponseEntity<ToDo> updateToDoText(@PathVariable String id, @RequestParam String toDoText) {
+		ToDo toDoResult = toDoService.updateToDoText(id,toDoText);
+		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
+	}
+	@PutMapping("/finished/{id}")
+	public ResponseEntity<ToDo> finishedTodo(@PathVariable String id)
+	{
+		ToDo toDoResult = toDoService.markToDoAsFinished(id);
+		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/delete/user/{userId}")
 	public ResponseEntity<String> delete(@PathVariable String userId,@RequestParam String id) {
 		toDoService.delete(id);
 		return new ResponseEntity<>(String.format("Deleted todo %s of user %s", id,userId),HttpStatus.OK);
 	}
-	@DeleteMapping ("/deleteAll")
+	@DeleteMapping ("/delete-all")
 	public ResponseEntity<String> deleteAll() {
 		toDoService.deleteAll();
 		return new ResponseEntity<>("Deleted all records",HttpStatus.OK);
