@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+import static java.util.stream.Collectors.toList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,16 +24,29 @@ class SortbyUpdatedTime implements Comparator<ToDo> {
 	}
 }
 
+
 @Service
 public class ToDoService {
 
 	@Autowired
 	private ToDoRepository toDoRepository;
-
+    
+	static Predicate<ToDo> exceptionWrapper(Predicate<ToDo> predicate) {
+	    return i -> {
+	        try {
+	            predicate.test(i);
+	            return true;
+	        } catch (NullPointerException e) {
+	          System.err.println("Null Pointer Exception occured : " + e.getMessage());
+	        }
+	    return false;
+	    };
+	}
+	
 	// Create operation
 	public ToDo create(ToDoDto toDoDto) {
-		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), false, toDoDto.getUserId(), ToDo.getCurrentTime(),
-				ToDo.getCurrentTime()));
+		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), false, false, toDoDto.getUserId(),
+				ToDo.getCurrentTime(), ToDo.getCurrentTime()));
 	}
 
 	// Retrieve operations
@@ -47,6 +62,13 @@ public class ToDoService {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
 		Collections.sort(toDoList, new SortbyUpdatedTime());
 		return toDoList;
+	}
+
+	public List<ToDo> getPriorityToDosToBeDone(String userId) {
+		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
+		return toDoList.stream()
+		        .filter(exceptionWrapper(toDo -> !toDo.getIsFinished() && toDo.getIsPriority()))
+		        .collect(toList());
 	}
 
 	// Update operations
@@ -68,6 +90,14 @@ public class ToDoService {
 		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
 		if (!toDoById.getIsFinished()) {
 			toDoById.setIsFinished(true);
+		}
+		return toDoRepository.save(toDoById);
+	}
+
+	public ToDo markToDoAsPriority(String id) {
+		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
+		if (!toDoById.getIsPriority()) {
+			toDoById.setIsPriority(true);
 		}
 		return toDoRepository.save(toDoById);
 	}

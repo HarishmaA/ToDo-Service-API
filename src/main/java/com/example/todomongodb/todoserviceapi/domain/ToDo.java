@@ -19,14 +19,17 @@ public class ToDo {
 	String _id;
 	String toDoText;
 	Boolean isFinished;
+	Boolean isPriority;
 	String userId;
 	String createdAt;
 	String updatedAt;
 
-	public ToDo(String toDoText, Boolean isFinished, String userId, String createdAt, String updatedAt) {
+	public ToDo(String toDoText, Boolean isFinished, Boolean isPriority, String userId, String createdAt,
+			String updatedAt) {
 		super();
 		this.toDoText = toDoText;
 		this.isFinished = isFinished;
+		this.isPriority = isPriority;
 		this.userId = userId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -40,6 +43,7 @@ public class ToDo {
 		this.toDoText = toDo.getToDoText();
 		this.userId = toDo.getUserId();
 		this.isFinished = toDo.getIsFinished();
+		this.isPriority = toDo.getIsPriority();
 		this.createdAt = toDo.getCreatedAt();
 		this.updatedAt = getCurrentTime();
 		return this;

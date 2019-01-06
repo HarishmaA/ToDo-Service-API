@@ -50,6 +50,11 @@ public class ToDoController {
 		 return toDoService.getSortedToDos(userId);
 		}
 	
+	@GetMapping(value = "/priority-todos/user/{userId}")
+	public List<ToDo> getPriorityToDosToBeDone(@PathVariable String userId){
+		return toDoService.getPriorityToDosToBeDone(userId);
+		}
+	
 	@PutMapping("/update")
 	public ResponseEntity<ToDo> update(@RequestBody ToDo toDo) {
 		ToDo toDoResult = toDoService.update(toDo);
@@ -66,6 +71,13 @@ public class ToDoController {
 	public ResponseEntity<ToDo> finishedTodo(@PathVariable String id)
 	{
 		ToDo toDoResult = toDoService.markToDoAsFinished(id);
+		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
+	}
+	
+	@PutMapping("/priority/{id}")
+	public ResponseEntity<ToDo> priorityTodo(@PathVariable String id)
+	{
+		ToDo toDoResult = toDoService.markToDoAsPriority(id);
 		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
 	}
 	
