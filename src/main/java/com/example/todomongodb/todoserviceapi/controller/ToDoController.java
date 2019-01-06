@@ -55,12 +55,6 @@ public class ToDoController {
 		return toDoService.getPriorityToDosToBeDone(userId);
 		}
 	
-	@PutMapping("/update")
-	public ResponseEntity<ToDo> update(@RequestBody ToDo toDo) {
-		ToDo toDoResult = toDoService.update(toDo);
-		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
-	}
-	
 	@PutMapping("/update/{id}")
 	public ResponseEntity<ToDo> updateToDoText(@PathVariable String id, @RequestParam String toDoText) {
 		ToDo toDoResult = toDoService.updateToDoText(id,toDoText);

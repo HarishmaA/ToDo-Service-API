@@ -1,19 +1,21 @@
 package com.example.todomongodb.todoserviceapi.service;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
-import static java.util.stream.Collectors.toList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.todomongodb.todoserviceapi.domain.ToDo;
+import com.example.todomongodb.todoserviceapi.exceptionhandlers.StreamNullPointerExceptionHandler;
 import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 import com.example.todomongodb.todoserviceapi.repository.ToDoRepository;
+import com.example.todomongodb.todoserviceapi.utils.TimeUtil;
 
 class SortbyUpdatedTime implements Comparator<ToDo> {
 
@@ -30,22 +32,9 @@ public class ToDoService {
 	@Autowired
 	private ToDoRepository toDoRepository;
 
-	public static Predicate<ToDo> exceptionWrapper(Predicate<ToDo> predicate) {
-		System.out.println(predicate);
-		return toDo -> {
-			try {
-				return predicate.test(toDo);
-			} catch (NullPointerException e) {
-				System.err.println("Null Pointer Exception occured : " + e.getMessage());
-			}
-			return false;
-		};
-	}
-
 	// Create operation
 	public ToDo create(ToDoDto toDoDto) {
-		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), false, false, toDoDto.getUserId(),
-				ToDo.getCurrentTime(), ToDo.getCurrentTime()));
+		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), toDoDto.getUserId()));
 	}
 
 	// Retrieve operations
@@ -65,39 +54,28 @@ public class ToDoService {
 
 	public List<ToDo> getPriorityToDosToBeDone(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		return toDoList.stream().filter(exceptionWrapper(toDo -> !toDo.getIsFinished() && toDo.getIsPriority()))
+		return toDoList.stream().filter(StreamNullPointerExceptionHandler.exceptionWrapper(toDo -> !toDo.getFinished() && toDo.getPriority()))
 				.collect(toList());
 	}
 
 	// Update operations
-	public ToDo update(ToDo toDo) {
-		ToDo toDoById = toDoRepository.findById(toDo.get_id())
-				.orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		ToDo toDoUpdated = toDoById.update(toDo);
-		return toDoRepository.save(toDoUpdated);
-	}
-
 	public ToDo updateToDoText(String id, String toDoText) {
-		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		toDoById.setToDoText(toDoText);
-		toDoById.setUpdatedAt(ToDo.getCurrentTime());
-		return toDoRepository.save(toDoById);
+		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
+		toDo.setToDoText(toDoText);
+		toDo.setUpdatedAt(TimeUtil.getCurrentTime());
+		return toDoRepository.save(toDo);
 	}
 
 	public ToDo markToDoAsFinished(String id) {
-		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		if (!toDoById.getIsFinished()) {
-			toDoById.setIsFinished(true);
-		}
-		return toDoRepository.save(toDoById);
+		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
+		toDo.finishedTask();
+		return toDoRepository.save(toDo);
 	}
 
 	public ToDo markToDoAsPriority(String id) {
-		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		if (!toDoById.getIsPriority()) {
-			toDoById.setIsPriority(true);
-		}
-		return toDoRepository.save(toDoById);
+		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
+		toDo.prioritizedTask();
+		return toDoRepository.save(toDo);
 	}
 
 	// Delete operations
@@ -106,8 +84,8 @@ public class ToDoService {
 	}
 
 	public void delete(String id) {
-		ToDo toDoById = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		toDoRepository.delete(toDoById);
+		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
+		toDoRepository.delete(toDo);
 	}
 
 }
