@@ -24,25 +24,24 @@ class SortbyUpdatedTime implements Comparator<ToDo> {
 	}
 }
 
-
 @Service
 public class ToDoService {
 
 	@Autowired
 	private ToDoRepository toDoRepository;
-    
-	static Predicate<ToDo> exceptionWrapper(Predicate<ToDo> predicate) {
-	    return i -> {
-	        try {
-	            predicate.test(i);
-	            return true;
-	        } catch (NullPointerException e) {
-	          System.err.println("Null Pointer Exception occured : " + e.getMessage());
-	        }
-	    return false;
-	    };
+
+	public static Predicate<ToDo> exceptionWrapper(Predicate<ToDo> predicate) {
+		return i -> {
+			try {
+				predicate.test(i);
+				return true;
+			} catch (NullPointerException e) {
+				System.err.println("Null Pointer Exception occured : " + e.getMessage());
+			}
+			return false;
+		};
 	}
-	
+
 	// Create operation
 	public ToDo create(ToDoDto toDoDto) {
 		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), false, false, toDoDto.getUserId(),
@@ -66,9 +65,8 @@ public class ToDoService {
 
 	public List<ToDo> getPriorityToDosToBeDone(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		return toDoList.stream()
-		        .filter(exceptionWrapper(toDo -> !toDo.getIsFinished() && toDo.getIsPriority()))
-		        .collect(toList());
+		return toDoList.stream().filter(exceptionWrapper(toDo -> !toDo.getIsFinished() && toDo.getIsPriority()))
+				.collect(toList());
 	}
 
 	// Update operations
