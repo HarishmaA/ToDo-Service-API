@@ -20,16 +20,14 @@ public class ToDo {
 	String _id;
 	String toDoText;
 	Boolean isFinished;
-	String day;
 	String userId;
 	OffsetDateTime createdAt;
 	OffsetDateTime updatedAt;
 	
-	public ToDo(String toDoText, Boolean isFinished, String day, String userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+	public ToDo(String toDoText, Boolean isFinished, String userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
 		super();
 		this.toDoText = toDoText;
 		this.isFinished = isFinished;
-		this.day = day;
 		this.userId = userId;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
@@ -39,7 +37,6 @@ public class ToDo {
 	public ToDo update(ToDo toDo)
 	{
 		this.toDoText = toDo.getToDoText();
-		this.day = toDo.getDay();
 		this.userId = toDo.getUserId();
 		this.isFinished = toDo.getIsFinished();
 		this.createdAt = toDo.getCreatedAt();

@@ -1,7 +1,7 @@
 package com.example.todomongodb.todoserviceapi.controller;
 
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,11 +43,6 @@ public class ToDoController {
 	@GetMapping(value = "/all-todos")
 	public List<ToDo> getAll(){
 		return toDoService.getAll();
-	}
-	
-	@GetMapping(value = "/day-todos/user/{userId}")
-	public Map<String,List<ToDo>> getToDoListSplitedByDay(@PathVariable String userId){
-	 return toDoService.getToDoSplitedByDay(userId);
 	}
 	
 	@GetMapping(value = "/sorted-todos/user/{userId}")

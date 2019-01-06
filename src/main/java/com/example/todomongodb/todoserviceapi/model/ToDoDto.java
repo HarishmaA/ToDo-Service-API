@@ -1,6 +1,5 @@
 package com.example.todomongodb.todoserviceapi.model;
 
-import java.time.OffsetDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,8 +14,5 @@ import lombok.Setter;
 @Setter
 public class ToDoDto {	
 	String toDoText;
-	String day;
 	String userId;
-	OffsetDateTime createdAt;
-	OffsetDateTime updatedAt;
 }

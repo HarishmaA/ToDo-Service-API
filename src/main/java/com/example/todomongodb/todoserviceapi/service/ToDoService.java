@@ -5,12 +5,10 @@ import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import static java.util.stream.Collectors.groupingBy;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import com.example.todomongodb.todoserviceapi.domain.ToDo;
 import com.example.todomongodb.todoserviceapi.model.ToDoDto;
@@ -34,7 +32,7 @@ public class ToDoService {
 	
 	//Create operation
 	public ToDo create(ToDoDto toDoDto) {
-		return toDoRepository.save(new ToDo(toDoDto.getToDoText(),false,toDoDto.getDay(),toDoDto.getUserId(),OffsetDateTime.now(),OffsetDateTime.now()));
+		return toDoRepository.save(new ToDo(toDoDto.getToDoText(),false,toDoDto.getUserId(),OffsetDateTime.now(),OffsetDateTime.now()));
 	}
 	
 	//Retrieve operations
@@ -45,12 +43,6 @@ public class ToDoService {
 		return toDoRepository.findByUserId(userId);
 	}
 	
-	public Map<String,List<ToDo>> getToDoSplitedByDay(@PathVariable String userId){
-		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		return toDoList
-				                   .stream()
-                                   .collect(groupingBy(ToDo::getDay));
-	}
 	public List<ToDo> getSortedToDos(String userId)
 	{
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);

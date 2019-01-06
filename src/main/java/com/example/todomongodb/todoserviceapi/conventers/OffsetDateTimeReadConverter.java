@@ -10,8 +10,6 @@ import org.springframework.data.convert.ReadingConverter;
 public class OffsetDateTimeReadConverter implements Converter<String, OffsetDateTime> {
     @Override
     public OffsetDateTime convert(String dateString) {
-    	DateTimeFormatter formatter =
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-        return OffsetDateTime.parse(dateString, formatter);
+        return OffsetDateTime.parse(dateString, DateTimeFormatter.RFC_1123_DATE_TIME);
     }
 }

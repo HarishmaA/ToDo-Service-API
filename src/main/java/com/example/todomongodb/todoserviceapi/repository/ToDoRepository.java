@@ -13,5 +13,4 @@ public interface ToDoRepository extends MongoRepository<ToDo, String> {
 
 	public List<ToDo> findByUserId(String userId);
     public Optional<ToDo> findById(String id);
-	public List<ToDo> findByDay(String day);
 }

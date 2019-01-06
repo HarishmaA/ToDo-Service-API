@@ -10,6 +10,6 @@ import org.springframework.data.convert.WritingConverter;
 public class OffsetDateTimeWriteConverter implements Converter<OffsetDateTime, String> {
 	@Override
 	public String convert(OffsetDateTime offsetDateTime) {
-		return offsetDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
+		return offsetDateTime.format(DateTimeFormatter.RFC_1123_DATE_TIME);
 	}
 }
