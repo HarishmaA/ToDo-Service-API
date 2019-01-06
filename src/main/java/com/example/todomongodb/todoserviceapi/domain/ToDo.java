@@ -1,17 +1,16 @@
 package com.example.todomongodb.todoserviceapi.domain;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-
-
+@NoArgsConstructor
 @Getter
 @Setter
 @Document
@@ -21,10 +20,10 @@ public class ToDo {
 	String toDoText;
 	Boolean isFinished;
 	String userId;
-	OffsetDateTime createdAt;
-	OffsetDateTime updatedAt;
-	
-	public ToDo(String toDoText, Boolean isFinished, String userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+	String createdAt;
+	String updatedAt;
+
+	public ToDo(String toDoText, Boolean isFinished, String userId, String createdAt, String updatedAt) {
 		super();
 		this.toDoText = toDoText;
 		this.isFinished = isFinished;
@@ -33,16 +32,17 @@ public class ToDo {
 		this.updatedAt = updatedAt;
 	}
 
-	public ToDo() {}
-	public ToDo update(ToDo toDo)
-	{
+	public static String getCurrentTime() {
+		return OffsetDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME);
+	}
+
+	public ToDo update(ToDo toDo) {
 		this.toDoText = toDo.getToDoText();
 		this.userId = toDo.getUserId();
 		this.isFinished = toDo.getIsFinished();
 		this.createdAt = toDo.getCreatedAt();
-		this.updatedAt = OffsetDateTime.now();
+		this.updatedAt = getCurrentTime();
 		return this;
 	}
-	
-	
+
 }

@@ -61,6 +61,7 @@ public class ToDoController {
 		ToDo toDoResult = toDoService.updateToDoText(id,toDoText);
 		return new ResponseEntity<>(toDoResult,HttpStatus.OK);
 	}
+
 	@PutMapping("/finished/{id}")
 	public ResponseEntity<ToDo> finishedTodo(@PathVariable String id)
 	{
