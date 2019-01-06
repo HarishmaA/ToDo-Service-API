@@ -2,29 +2,16 @@ package com.example.todomongodb.todoserviceapi.service;
 
 import static java.util.stream.Collectors.toList;
 
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.todomongodb.todoserviceapi.domain.ToDo;
-import com.example.todomongodb.todoserviceapi.exceptionhandlers.StreamNullPointerExceptionHandler;
 import com.example.todomongodb.todoserviceapi.model.ToDoDto;
 import com.example.todomongodb.todoserviceapi.repository.ToDoRepository;
 import com.example.todomongodb.todoserviceapi.utils.TimeUtil;
-
-class SortbyUpdatedTime implements Comparator<ToDo> {
-
-	public int compare(ToDo toDo1, ToDo toDo2) {
-		OffsetDateTime toDo1Time = OffsetDateTime.parse(toDo1.getUpdatedAt(), DateTimeFormatter.RFC_1123_DATE_TIME);
-		OffsetDateTime toDo2Time = OffsetDateTime.parse(toDo2.getUpdatedAt(), DateTimeFormatter.RFC_1123_DATE_TIME);
-		return toDo1Time.compareTo(toDo2Time);
-	}
-}
 
 @Service
 public class ToDoService {
@@ -48,13 +35,13 @@ public class ToDoService {
 
 	public List<ToDo> getSortedToDos(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		Collections.sort(toDoList, new SortbyUpdatedTime());
+		Collections.sort(toDoList);
 		return toDoList;
 	}
 
 	public List<ToDo> getPriorityToDosToBeDone(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		return toDoList.stream().filter(StreamNullPointerExceptionHandler.exceptionWrapper(toDo -> !toDo.getFinished() && toDo.getPriority()))
+		return toDoList.stream().filter(toDo -> !toDo.getFinished() && toDo.getPriority())
 				.collect(toList());
 	}
 
