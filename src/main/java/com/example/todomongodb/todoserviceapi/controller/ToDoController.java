@@ -46,13 +46,13 @@ public class ToDoController {
 	}
 	
 	@GetMapping(value = "/sorted-todos/user/{userId}")
-	public List<ToDo> getSortedToDos(@PathVariable String userId){
+	public List<ToDo> getToDos(@PathVariable String userId){
 		 return toDoService.getSortedToDos(userId);
 		}
 	
 	@GetMapping(value = "/priority-todos/user/{userId}")
-	public List<ToDo> getPriorityToDosToBeDone(@PathVariable String userId){
-		return toDoService.getPriorityToDosToBeDone(userId);
+	public List<ToDo> getPriorityToDos(@PathVariable String userId){
+		return toDoService.getPriorityToDos(userId);
 		}
 	
 	@PutMapping("/update/{id}")

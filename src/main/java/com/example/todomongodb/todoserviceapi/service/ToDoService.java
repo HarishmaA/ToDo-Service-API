@@ -39,7 +39,7 @@ public class ToDoService {
 		return toDoList;
 	}
 
-	public List<ToDo> getPriorityToDosToBeDone(String userId) {
+	public List<ToDo> getPriorityToDos(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
 		return toDoList.stream().filter(toDo -> !toDo.getFinished() && toDo.getPriority())
 				.collect(toList());
