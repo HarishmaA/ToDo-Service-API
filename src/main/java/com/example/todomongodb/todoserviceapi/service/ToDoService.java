@@ -31,10 +31,10 @@ public class ToDoService {
 	private ToDoRepository toDoRepository;
 
 	public static Predicate<ToDo> exceptionWrapper(Predicate<ToDo> predicate) {
-		return i -> {
+		System.out.println(predicate);
+		return toDo -> {
 			try {
-				predicate.test(i);
-				return true;
+				return predicate.test(toDo);
 			} catch (NullPointerException e) {
 				System.err.println("Null Pointer Exception occured : " + e.getMessage());
 			}
