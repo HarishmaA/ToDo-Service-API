@@ -19,21 +19,16 @@ public class ToDoService {
 	@Autowired
 	private ToDoRepository toDoRepository;
 
-	// Create operation
 	public ToDo create(ToDoDto toDoDto) {
 		return toDoRepository.save(new ToDo(toDoDto.getToDoText(), toDoDto.getUserId()));
 	}
 
-	// Retrieve operations
 	public List<ToDo> getAll() {
 		return toDoRepository.findAll();
 	}
 
-	public List<ToDo> getByUserId(String userId) {
-		return toDoRepository.findByUserId(userId);
-	}
-
-	public List<ToDo> getSortedToDos(String userId) {
+	
+	public List<ToDo> getToDos(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
 		Collections.sort(toDoList);
 		return toDoList;
@@ -41,11 +36,10 @@ public class ToDoService {
 
 	public List<ToDo> getPriorityToDos(String userId) {
 		List<ToDo> toDoList = toDoRepository.findByUserId(userId);
-		return toDoList.stream().filter(toDo -> !toDo.getFinished() && toDo.getPriority())
-				.collect(toList());
+		return toDoList.stream().filter(toDo -> !toDo.getFinished() && toDo.getPriority()).collect(toList());
 	}
 
-	// Update operations
+	
 	public ToDo updateToDoText(String id, String toDoText) {
 		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
 		toDo.setToDoText(toDoText);
@@ -55,17 +49,17 @@ public class ToDoService {
 
 	public ToDo markToDoAsFinished(String id) {
 		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		toDo.finishTask();
+		toDo.finishToDo();
 		return toDoRepository.save(toDo);
 	}
 
 	public ToDo markToDoAsPriority(String id) {
 		ToDo toDo = toDoRepository.findById(id).orElseThrow(() -> new RuntimeException("ToDo Id not found"));
-		toDo.prioritizeTask();
+		toDo.prioritizeToDo();
 		return toDoRepository.save(toDo);
 	}
 
-	// Delete operations
+	
 	public void deleteAll() {
 		toDoRepository.deleteAll();
 	}

@@ -35,27 +35,17 @@ public class ToDo implements Comparable<ToDo> {
 		this.updatedAt = DateUtil.getCurrentTime();
 	}
 
-	public void finishTask() {
+	public void finishToDo() {
 		if (!this.finished) {
 			this.finished = true;
 		}
 	}
 
-	public void prioritizeTask() {
+	public void prioritizeToDo() {
 		System.out.println(this.priority);
 		if (!this.priority) {
 			this.priority = true;
 		}
-	}
-
-	public ToDo update(ToDo toDo) {
-		this.toDoText = toDo.getToDoText();
-		this.userId = toDo.getUserId();
-		this.finished = toDo.getFinished();
-		this.priority = toDo.getPriority();
-		this.createdAt = toDo.getCreatedAt();
-		this.updatedAt = DateUtil.getCurrentTime();
-		return this;
 	}
 
 	@Override
