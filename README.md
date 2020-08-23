@@ -1,2 +1,2 @@
-# ToDo-Service-API
+# TodoServiceAPI
 RESTful Service using Spring Boot and MongoDB
